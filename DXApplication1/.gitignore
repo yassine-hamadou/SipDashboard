@@ -3,9 +3,5 @@ appsettings.Development.json
 .config
 bin
 obj
-../.vs
-../.vscode
-../.idea
-.vs
-.idea
+/.vs
 node_modules
