@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="" />
+  <DataSources>
+    <SqlDataSource Name="EnpDB" ComponentName="sqlDataSource1">
+      <Connection Name="EnpDBConnectionString" FromAppConfig="true" />
+      <Query Type="CustomSqlQuery" Name="TotalHoursPerMonth">
+        <Parameter Name="TenantId" Type="DevExpress.DataAccess.Expression">(System.String)(Join(?TenantId ))</Parameter>
+        <Sql>select datename(month, Downtime) as month, year(Downtime) as year, sum(datediff(hour, Downtime, WTimeEnd)) as totaldowntime,TenantId from faultentry where WTimeEnd &gt; dateadd(month, -12, getdate()) and Status=1 and TenantId in (select value from STRING_SPLIT(@TenantId,',')) group by datename(month, Downtime), year(Downtime),TenantId order by year(Downtime), datename(month, Downtime)</Sql>
+      </Query>
+      <Query Type="CustomSqlQuery" Name="total hours of downtime per downtype">
+        <Parameter Name="TenantId" Type="DevExpress.DataAccess.Expression">(System.String)(join(?TenantId))</Parameter>
+        <Sql>select downtype, TenantId, sum(datediff(hour, Downtime, WTimeEnd)) as totaldowntime from faultentry where TenantId in (select value from STRING_SPLIT(@TenantId,',')) group by downtype, TenantId order by downtype</Sql>
+      </Query>
+      <Query Type="SelectQuery" Name="Equipment">
+        <Tables>
+          <Table Name="Equipment" />
+        </Tables>
+        <Columns>
+          <Column Table="Equipment" Name="TenantId" />
+        </Columns>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Parameters>
+    <Parameter Name="TenantId" AllowMultiselect="true" Description="Company">
+      <Values>
+        <Value>test</Value>
+      </Values>
+      <DynamicListLookUpSettings DataSourceName="sqlDataSource1" DataMember="Equipment" ValueMember="TenantId" DisplayMember="TenantId" SortByMember="TenantId" SortOrder="None" />
+    </Parameter>
+  </Parameters>
+  <Items>
+    <Chart ComponentName="chartDashboardItem2" Name="Monthly Downtime" DataSource="sqlDataSource1" DataMember="TotalHoursPerMonth" IsMasterFilterCrossDataSource="true">
+      <DataItems>
+        <Dimension DataMember="month" ColoringMode="Hue" DefaultId="DataItem0" />
+        <Measure DataMember="totaldowntime" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Dimension DataMember="year" DefaultId="DataItem3">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Dimension>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+        <Argument DefaultId="DataItem3" />
+      </Arguments>
+      <ColorScheme>
+        <Entry DataSource="sqlDataSource1" DataMember="TotalHoursPerMonth" Color="-15052312">
+          <DimensionKeys>
+            <DimensionKey>
+              <Definition DataMember="month" />
+              <Value Type="System.String" Value="October" />
+            </DimensionKey>
+          </DimensionKeys>
+        </Entry>
+      </ColorScheme>
+      <Panes>
+        <Pane Name="Pane 1">
+          <Series>
+            <Simple Name="Total Downtime (Hours)">
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem3" Name="Downtime per FaultType" DataSource="sqlDataSource1" DataMember="total hours of downtime per downtype">
+      <DataItems>
+        <Dimension DataMember="downtype" DefaultId="DataItem0" />
+        <Measure DataMember="totaldowntime" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Pane 1">
+          <AxisY Title="Total Downtime (Hours)">
+            <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+          </AxisY>
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutGroup Weight="1.7321527393469838">
+        <LayoutItem Weight="0.010171046679747608" />
+        <LayoutItem DashboardItem="chartDashboardItem2" Weight="2.2386179430726414" />
+        <LayoutItem DashboardItem="chartDashboardItem3" Weight="2.215516488941579" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

@@ -1,0 +1,11 @@
+appsettings.json
+appsettings.Development.json
+.config
+bin
+obj
+../.vs
+../.vscode
+../.idea
+.vs
+.idea
+node_modules

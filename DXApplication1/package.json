@@ -1,0 +1,11 @@
+{
+    "name": "dxapplication1",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "devextreme": "21.2.6",
+        "@devexpress/analytics-core": "21.2.6",
+        "devexpress-dashboard": "21.2.6",
+        "jquery-ui-dist": "^1.12.1"
+    }
+}

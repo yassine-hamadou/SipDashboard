@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="Fault type per downtime" />
+  <DataSources>
+    <SqlDataSource Name="SQL Data Source" ComponentName="sqlDataSource1" DataProcessingMode="Client">
+      <Connection Name="NWindConnectionString" FromAppConfig="true" />
+      <Query Type="SelectQuery" Name="Products_Categories">
+        <Tables>
+          <Table Name="Categories" />
+          <Table Name="Products" />
+          <Relation Type="Inner" Parent="Categories" Nested="Products">
+            <KeyColumn Parent="CategoryID" Nested="CategoryID" />
+          </Relation>
+        </Tables>
+        <Columns>
+          <AllColumns Table="Categories" />
+          <AllColumns Table="Products" />
+        </Columns>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+</Dashboard>
