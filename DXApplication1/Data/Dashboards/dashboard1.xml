@@ -19,23 +19,59 @@
       </Query>
       <ConnectionOptions CloseConnection="true" />
     </SqlDataSource>
+    <SqlDataSource Name="count number of equipment per model" ComponentName="sqlDataSource2">
+      <Connection Name="EnpDBConnectionString" FromAppConfig="true" />
+      <Query Type="CustomSqlQuery" Name="count number of equipment per model">
+        <Parameter Name="TenantId" Type="DevExpress.DataAccess.Expression">(System.String)(Join(?TenantId))</Parameter>
+        <Sql>select A.name as Manufacturer, B.name as Model, C.Equipment_id as tenant, COUNT(C.equipment_id) as countequipment, count(D.fleetid) as countfault, count(E.ReferenceId) as countmaintenance
+from Manufacturer A
+inner join model B on A.Manufacturer_id=B.manufacturer_id
+inner join Equipment C on B.model_id=C.model_id
+left join faultentry D on C.equipment_id=D.FleetID
+left join FleetSchedule E on C.equipment_id=E.FleetID 
+group by A.name, B.name, C.Equipment_id
+order by  A.name, B.name</Sql>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
   </DataSources>
+  <Parameters>
+    <Parameter Name="TenantId" AllowNull="true" AllowMultiselect="true" Description="Company">
+      <DynamicListLookUpSettings DataSourceName="sqlDataSource2" DataMember="count number of equipment per model" ValueMember="tenant" DisplayMember="tenant" />
+    </Parameter>
+  </Parameters>
   <Items>
-    <Chart ComponentName="chartDashboardItem1" Name="Chart 1">
-      <Panes>
-        <Pane Name="Pane 1" />
-      </Panes>
-    </Chart>
-    <Chart ComponentName="chartDashboardItem2" Name="Chart 2">
-      <Panes>
-        <Pane Name="Pane 1" />
-      </Panes>
-    </Chart>
+    <Grid ComponentName="gridDashboardItem1" Name="Grid 1" DataSource="sqlDataSource2" DataMember="count number of equipment per model">
+      <DataItems>
+        <Dimension DataMember="countequipment" DefaultId="DataItem0" />
+        <Measure DataMember="countfault" DefaultId="DataItem1" />
+        <Dimension DataMember="Manufacturer" DefaultId="DataItem3" />
+        <Dimension DataMember="Model" DefaultId="DataItem4" />
+        <Measure DataMember="countmaintenance" DefaultId="DataItem2" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem3" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem4" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem1" />
+        </GridMeasureColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem2" />
+        </GridMeasureColumn>
+      </GridColumns>
+      <GridOptions />
+    </Grid>
   </Items>
   <LayoutTree>
     <LayoutGroup>
-      <LayoutItem DashboardItem="chartDashboardItem1" />
-      <LayoutItem DashboardItem="chartDashboardItem2" />
+      <LayoutItem DashboardItem="gridDashboardItem1" />
     </LayoutGroup>
   </LayoutTree>
 </Dashboard>
