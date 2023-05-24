@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Dashboard>
-  <Title Text="Sample Dashboard" />
+  <Title Visible="false" Text="" />
   <DataSources>
     <SqlDataSource Name="SQL Data Source" ComponentName="sqlDataSource1" DataProcessingMode="Client">
       <Connection Name="NWindConnectionString" FromAppConfig="true" />
@@ -41,7 +41,7 @@ order by  A.name, B.name</Sql>
     </Parameter>
   </Parameters>
   <Items>
-    <Grid ComponentName="gridDashboardItem1" Name="Grid 1" DataSource="sqlDataSource2" DataMember="count number of equipment per model">
+    <Grid ComponentName="gridDashboardItem1" Name="" DataSource="sqlDataSource2" DataMember="count number of equipment per model">
       <DataItems>
         <Dimension DataMember="countequipment" DefaultId="DataItem0" />
         <Measure DataMember="countfault" DefaultId="DataItem1" />
