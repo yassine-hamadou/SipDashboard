@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="HRDashBoard" />
+  <DataSources>
+    <SqlDataSource Name="EmployeeByDepartment" ComponentName="sqlDataSource1">
+      <Connection Name="EnpHRDBConnectionString" FromAppConfig="true" />
+      <Query Type="CustomSqlQuery" Name="FetchEmploByDept">
+        <Parameter Name="tenant" Type="System.String">test</Parameter>
+        <Parameter Name="param1" Type="System.String">tarkwa</Parameter>
+        <Sql>SELECT  C.Name as Department, sum (case when E.gender='MALE' then 1 end) as Male, sum (case when E.gender='FEMALE' then 1 end) as Female, COUNT(E.Id) as Total
+  
+ FROM   [dbo].[Department] C, [dbo].[Employee] E
+
+ WHERE C.Id=E.DepartmentId 
+ Group By  C.Name
+ 
+ Order By  C.Name</Sql>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+    <SqlDataSource Name="GridData" ComponentName="sqlDataSource2">
+      <Connection Name="EnpHRDBConnectionString" FromAppConfig="true" />
+      <Query Type="CustomSqlQuery" Name="GridData">
+        <Sql>
+ SELECT A.Name as Paygroup, B.Name as Division, C.Name as Department, D.Name as Unit,sum (case when E.gender='MALE' then 1 end) as Male, sum (case when E.gender='FEMALE' then 1 end) as Female,COUNT(E.Id) as Total
+  
+ FROM [dbo].[Paygroup] A, [dbo].[Division] B, [dbo].[Department] C,[dbo].[Unit] D, [dbo].[Employee] E
+
+ WHERE A.Id=E.PaygroupId and B.Id=E.DivisionId and C.Id=E.DepartmentId and D.Id=E.UnitId
+ Group By A.Name, B.Name, C.Name, D.Name
+ 
+ Order By A.Name,  B.Name, C.Name, D.Name</Sql>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Parameters>
+    <Parameter Name="Tenant" AllowMultiselect="true">
+      <DynamicListLookUpSettings DataSourceName="sqlDataSource1" DataMember="FetchEmploByDept" />
+    </Parameter>
+  </Parameters>
+  <Items>
+    <Chart ComponentName="chartDashboardItem1" Name="Chart 1" DataSource="sqlDataSource1" DataMember="FetchEmploByDept">
+      <DataItems>
+        <Dimension DataMember="Department" DefaultId="DataItem0" />
+        <Measure DataMember="Male" DefaultId="DataItem1" />
+        <Measure DataMember="Female" DefaultId="DataItem2" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Pane 1">
+          <AxisY Title="Employee By Department" />
+          <Series>
+            <Simple SeriesType="StackedBar">
+              <Value DefaultId="DataItem1" />
+            </Simple>
+            <Simple SeriesType="StackedBar">
+              <Value DefaultId="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Grid ComponentName="gridDashboardItem1" Name="Employee Counts" DataSource="sqlDataSource2" DataMember="GridData">
+      <DataItems>
+        <Dimension DataMember="Paygroup" DefaultId="DataItem0" />
+        <Dimension DataMember="Division" DefaultId="DataItem1" />
+        <Dimension DataMember="Department" DefaultId="DataItem2" />
+        <Dimension DataMember="Unit" DefaultId="DataItem3" />
+        <Measure DataMember="Male" DefaultId="DataItem4" />
+        <Measure DataMember="Female" DefaultId="DataItem5" />
+        <Measure DataMember="Total" DefaultId="DataItem6" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem1" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem2" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem3" />
+        </GridDimensionColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem4" />
+        </GridMeasureColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem5" />
+        </GridMeasureColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem6" />
+        </GridMeasureColumn>
+      </GridColumns>
+      <GridOptions EnableBandedRows="true" ColumnWidthMode="AutoFitToContents" />
+    </Grid>
+    <ComboBox ComponentName="comboBoxDashboardItem1" Name="Search" DataSource="sqlDataSource2" DataMember="GridData" EnableSearch="true" ComboBoxType="Checked">
+      <DataItems>
+        <Dimension DataMember="Department" DefaultId="DataItem0" />
+        <Dimension DataMember="Division" DefaultId="DataItem1" />
+        <Dimension DataMember="Paygroup" DefaultId="DataItem2" />
+        <Dimension DataMember="Unit" DefaultId="DataItem3" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+        <Dimension DefaultId="DataItem1" />
+        <Dimension DefaultId="DataItem2" />
+        <Dimension DefaultId="DataItem3" />
+      </FilterDimensions>
+    </ComboBox>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutItem DashboardItem="chartDashboardItem1" />
+      <LayoutGroup Orientation="Vertical">
+        <LayoutItem DashboardItem="comboBoxDashboardItem1" Weight="0.12673625176972375" />
+        <LayoutItem DashboardItem="gridDashboardItem1" Weight="1.1649073564206471" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>
